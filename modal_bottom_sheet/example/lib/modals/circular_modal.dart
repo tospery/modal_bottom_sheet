@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart'
-    as modal_bottom_sheet;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AvatarBottomSheet extends StatelessWidget {
   final Widget child;
@@ -99,7 +98,7 @@ Future<T?> showAvatarModalBottomSheet<T>({
   assert(debugCheckHasMediaQuery(context));
   assert(debugCheckHasMaterialLocalizations(context));
   final result = await Navigator.of(context, rootNavigator: useRootNavigator)
-      .push(modal_bottom_sheet.ModalSheetRoute<T>(
+      .push(ModalBottomSheetRoute<T>(
     builder: builder,
     containerBuilder: (_, animation, child) => AvatarBottomSheet(
       child: child,

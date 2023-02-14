@@ -19,7 +19,7 @@ class _ModalBottomSheet<T> extends StatefulWidget {
   }) : super(key: key);
 
   final double? closeProgressThreshold;
-  final ModalSheetRoute<T> route;
+  final ModalBottomSheetRoute<T> route;
   final bool expanded;
   final bool bounce;
   final bool enableDrag;
@@ -75,7 +75,7 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMediaQuery(context));
     assert(widget.route._animationController != null);
-    final scrollController = PrimaryScrollController.maybeOf(context) ??
+    final scrollController = PrimaryScrollController.of(context) ??
         (_scrollController ??= ScrollController());
     return ModalScrollController(
       controller: scrollController,
@@ -122,8 +122,8 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
   }
 }
 
-class ModalSheetRoute<T> extends PageRoute<T> {
-  ModalSheetRoute({
+class ModalBottomSheetRoute<T> extends PageRoute<T> {
+  ModalBottomSheetRoute({
     this.closeProgressThreshold,
     this.containerBuilder,
     required this.builder,
@@ -211,11 +211,11 @@ class ModalSheetRoute<T> extends PageRoute<T> {
 
   @override
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) =>
-      nextRoute is ModalSheetRoute;
+      nextRoute is ModalBottomSheetRoute;
 
   @override
   bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) =>
-      previousRoute is ModalSheetRoute || previousRoute is PageRoute;
+      previousRoute is ModalBottomSheetRoute || previousRoute is PageRoute;
 
   Widget getPreviousRouteTransition(
     BuildContext context,
@@ -257,7 +257,7 @@ Future<T?> showCustomModalBottomSheet<T>({
       : '';
 
   final result = await Navigator.of(context, rootNavigator: useRootNavigator)
-      .push(ModalSheetRoute<T>(
+      .push(ModalBottomSheetRoute<T>(
     builder: builder,
     bounce: bounce,
     containerBuilder: containerWidget,

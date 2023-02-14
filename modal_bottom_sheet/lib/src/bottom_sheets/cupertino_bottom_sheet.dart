@@ -4,15 +4,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart'
-    show
-        CupertinoApp,
-        CupertinoColors,
-        CupertinoDynamicColor,
-        CupertinoTheme,
-        CupertinoThemeData,
-        CupertinoUserInterfaceLevel,
-        CupertinoUserInterfaceLevelData;
+import 'package:flutter/cupertino.dart' show CupertinoTheme, CupertinoApp;
 import 'package:flutter/material.dart'
     show
         Colors,
@@ -69,10 +61,7 @@ class _CupertinoBottomSheetContainer extends StatelessWidget {
           child: MediaQuery.removePadding(
             context: context,
             removeTop: true, //Remove top Safe Area
-            child: CupertinoUserInterfaceLevel(
-              data: CupertinoUserInterfaceLevelData.elevated,
-              child: child,
-            ),
+            child: child,
           ),
         ),
       ),
@@ -144,7 +133,7 @@ Future<T?> showCupertinoModalBottomSheet<T>({
   return result;
 }
 
-class CupertinoModalBottomSheetRoute<T> extends ModalSheetRoute<T> {
+class CupertinoModalBottomSheetRoute<T> extends ModalBottomSheetRoute<T> {
   final Radius topRadius;
 
   final Curve? previousRouteAnimationCurve;
@@ -289,23 +278,8 @@ class _CupertinoModalTransition extends StatelessWidget {
                   scale: scale,
                   alignment: Alignment.topCenter,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(radius),
-                    child: CupertinoUserInterfaceLevel(
-                      data: CupertinoUserInterfaceLevelData.elevated,
-                      child: Builder(
-                        builder: (context) => CupertinoTheme(
-                          data: createPreviousRouteTheme(
-                            context,
-                            curvedAnimation,
-                          ),
-                          child: CupertinoUserInterfaceLevel(
-                            data: CupertinoUserInterfaceLevelData.base,
-                            child: child!,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(radius),
+                      child: child),
                 ),
               ),
             ],
@@ -313,76 +287,6 @@ class _CupertinoModalTransition extends StatelessWidget {
         },
       ),
     );
-  }
-
-  CupertinoThemeData createPreviousRouteTheme(
-    BuildContext context,
-    Animation<double> animation,
-  ) {
-    final cTheme = CupertinoTheme.of(context);
-
-    final systemBackground = CupertinoDynamicColor.resolve(
-      cTheme.scaffoldBackgroundColor,
-      context,
-    );
-
-    final barBackgroundColor = CupertinoDynamicColor.resolve(
-      cTheme.barBackgroundColor,
-      context,
-    );
-
-    var previousRouteTheme = cTheme;
-
-    if (cTheme.scaffoldBackgroundColor is CupertinoDynamicColor) {
-      final dynamicScaffoldBackgroundColor =
-          cTheme.scaffoldBackgroundColor as CupertinoDynamicColor;
-
-      /// BackgroundColor for the previous route with forced using
-      /// of the elevated colors
-      final elevatedScaffoldBackgroundColor =
-          CupertinoDynamicColor.withBrightnessAndContrast(
-        color: dynamicScaffoldBackgroundColor.elevatedColor,
-        darkColor: dynamicScaffoldBackgroundColor.darkElevatedColor,
-        highContrastColor:
-            dynamicScaffoldBackgroundColor.highContrastElevatedColor,
-        darkHighContrastColor:
-            dynamicScaffoldBackgroundColor.darkHighContrastElevatedColor,
-      );
-
-      previousRouteTheme = previousRouteTheme.copyWith(
-        scaffoldBackgroundColor: ColorTween(
-          begin: systemBackground,
-          end: elevatedScaffoldBackgroundColor.resolveFrom(context),
-        ).evaluate(animation),
-        primaryColor: CupertinoColors.placeholderText.resolveFrom(context),
-      );
-    }
-
-    if (cTheme.barBackgroundColor is CupertinoDynamicColor) {
-      final dynamicBarBackgroundColor =
-          cTheme.barBackgroundColor as CupertinoDynamicColor;
-
-      /// NavigationBarColor for the previous route with forced using
-      /// of the elevated colors
-      final elevatedBarBackgroundColor =
-          CupertinoDynamicColor.withBrightnessAndContrast(
-        color: dynamicBarBackgroundColor.elevatedColor,
-        darkColor: dynamicBarBackgroundColor.darkElevatedColor,
-        highContrastColor: dynamicBarBackgroundColor.highContrastElevatedColor,
-        darkHighContrastColor:
-            dynamicBarBackgroundColor.darkHighContrastElevatedColor,
-      );
-
-      previousRouteTheme = previousRouteTheme.copyWith(
-        barBackgroundColor: ColorTween(
-          begin: barBackgroundColor,
-          end: elevatedBarBackgroundColor.resolveFrom(context),
-        ).evaluate(animation),
-        primaryColor: CupertinoColors.placeholderText.resolveFrom(context),
-      );
-    }
-
-    return previousRouteTheme;
   }
 }
 
@@ -488,6 +392,11 @@ class _CupertinoScaffoldState extends State<CupertinoScaffold>
     animationController =
         AnimationController(duration: Duration(milliseconds: 350), vsync: this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
